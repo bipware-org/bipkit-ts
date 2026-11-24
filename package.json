@@ -1,0 +1,59 @@
+{
+  "name": "@bipkit/sdk",
+  "version": "0.1.0",
+  "description": "Official TypeScript/JavaScript SDK for the Bipkit System One Decision Engine API.",
+  "license": "MIT",
+  "author": "Bipware <support@bipware.co.za>",
+  "homepage": "https://docs.bipkit.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bipware-org/bipkit-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bipware-org/bipkit-ts/issues"
+  },
+  "keywords": [
+    "bipkit",
+    "ai",
+    "agents",
+    "decision-engine",
+    "routing",
+    "guardrails",
+    "classification",
+    "provenance"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "generate": "openapi-typescript spec/openapi.public.json -o src/types/generated.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsup",
+    "test": "node --test tests/*.test.mjs",
+    "test:vitest": "vitest run"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "openapi-typescript": "^7.4.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

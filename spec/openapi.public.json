@@ -1,0 +1,3156 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Bipkit Decision Engine API",
+    "description": "Sub-millisecond, calibrated System One Decision Engine API supporting bip-instant and bip-cascade capability tiers, token usage metering, and Decision Provenance Ledger (DPL) verification.",
+    "version": "0.1.0",
+    "contact": {
+      "name": "Bipware Support",
+      "email": "support@bipware.co.za",
+      "url": "https://docs.bipkit.io"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.bipkit.io",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Core Evaluation",
+      "description": "Sub-millisecond System One evaluations, decisions, and outcome feedback."
+    },
+    {
+      "name": "Engine Catalog",
+      "description": "Available production decision engine capability tiers (`bip-instant`, `bip-cascade`)."
+    },
+    {
+      "name": "API Keys",
+      "description": "Organization API key provisioning, listing, rotation, and revocation."
+    },
+    {
+      "name": "Usage & Quotas",
+      "description": "Monthly decision quotas, token consumption, and latency timeseries."
+    },
+    {
+      "name": "Decision Provenance Ledger",
+      "description": "Cryptographic provenance records, public auditor metadata, and bundle verification."
+    },
+    {
+      "name": "Health",
+      "description": "Service health check."
+    }
+  ],
+  "paths": {
+    "/api/v1/evaluate": {
+      "post": {
+        "summary": "Evaluate",
+        "operationId": "evaluate_api_v1_evaluate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "tags": [
+          "Core Evaluation"
+        ]
+      }
+    },
+    "/api/v1/decide": {
+      "post": {
+        "summary": "Decide",
+        "operationId": "decide_api_v1_decide_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DecisionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "tags": [
+          "Core Evaluation"
+        ]
+      }
+    },
+    "/api/v1/feedback": {
+      "post": {
+        "summary": "Submit Feedback",
+        "description": "Submits verified ground-truth outcome feedback for a prior evaluation request to support decision calibration and quality monitoring.",
+        "operationId": "submit_feedback_api_v1_feedback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerFeedbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerFeedbackResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "tags": [
+          "Core Evaluation"
+        ]
+      }
+    },
+    "/api/v1/engines": {
+      "get": {
+        "summary": "List Engines",
+        "operationId": "list_engines_api_v1_engines_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EngineStatusModel"
+                  },
+                  "type": "array",
+                  "title": "Response List Engines Api V1 Engines Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "tags": [
+          "Engine Catalog"
+        ]
+      }
+    },
+    "/api/v1/api-keys": {
+      "get": {
+        "summary": "List Api Keys",
+        "description": "List all API keys belonging to the caller's organization (redacted, prefix only).",
+        "operationId": "list_api_keys_api_v1_api_keys_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/APIKeyInfo"
+                  },
+                  "type": "array",
+                  "title": "Response List Api Keys Api V1 Api Keys Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "tags": [
+          "API Keys"
+        ]
+      },
+      "post": {
+        "summary": "Create Api Key",
+        "description": "Generate a new API key for the authenticated organization.\nThe raw secret is returned ONLY ONCE upon creation.",
+        "operationId": "create_api_key_api_v1_api_keys_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAPIKeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAPIKeyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "tags": [
+          "API Keys"
+        ]
+      }
+    },
+    "/api/v1/api-keys/{key_id}/rotate": {
+      "post": {
+        "summary": "Rotate Api Key",
+        "description": "Rotate an existing API key:\n  - Generates a brand-new key with the same name, environment, and scopes.\n  - Either immediately revokes the previous key (grace_period_minutes=0)\n    or sets an expiration window for zero-downtime production rotation.",
+        "operationId": "rotate_api_key_api_v1_api_keys__key_id__rotate_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Key Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RotateAPIKeyRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RotateAPIKeyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "API Keys"
+        ]
+      }
+    },
+    "/api/v1/api-keys/{key_id}": {
+      "delete": {
+        "summary": "Revoke Api Key",
+        "description": "Revoke an API key belonging to the caller's organization.",
+        "operationId": "revoke_api_key_api_v1_api_keys__key_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Key Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "API Keys"
+        ]
+      }
+    },
+    "/api/v1/usage/summary": {
+      "get": {
+        "tags": [
+          "Usage & Quotas"
+        ],
+        "summary": "Get Usage Summary",
+        "description": "Return current-month decision quota, consumption, latency, and engine breakdown.",
+        "operationId": "get_usage_summary_api_v1_usage_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/usage/timeseries": {
+      "get": {
+        "tags": [
+          "Usage & Quotas"
+        ],
+        "summary": "Get Usage Timeseries",
+        "description": "Return daily API request volume and average latency for the requested lookback window.",
+        "operationId": "get_usage_timeseries_api_v1_usage_timeseries_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 90,
+              "minimum": 1,
+              "default": 7,
+              "title": "Days"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageTimeseriesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/manifest": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Get Active Manifest",
+        "description": "Return the active verified `manifest/1` specification (public auditor metadata; ETag-cached).",
+        "operationId": "get_active_manifest_api_v1_provenance_manifest_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/calibration": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Get Calibration Evidence",
+        "description": "Return published `calibration-report/2` summary (digests, calibrator IDs, ECE bands, audit status; ETag-cached).",
+        "operationId": "get_calibration_evidence_api_v1_provenance_calibration_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/keys": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Get Public Key Registry",
+        "description": "Return the append-only hash-chained `keys/1` Ed25519 public key registry (served directly from registry; ETag-cached).",
+        "operationId": "get_public_key_registry_api_v1_provenance_keys_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/outcomes": {
+      "post": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Record Decision Outcome",
+        "description": "Attach an observed real-world outcome to a DPL decision (activates Verifier Invariant #20 on export).",
+        "operationId": "record_decision_outcome_api_v1_provenance_outcomes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordOutcomeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Record Decision Outcome Api V1 Provenance Outcomes Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/provenance/outcomes/batch": {
+      "post": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Record Decision Outcomes Batch",
+        "description": "Batch-record up to 100 observed real-world outcomes with immediate Invariant #20 alignment evaluation.",
+        "operationId": "record_decision_outcomes_batch_api_v1_provenance_outcomes_batch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchRecordOutcomeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Record Decision Outcomes Batch Api V1 Provenance Outcomes Batch Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/provenance/chain": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Export Ledger Chain",
+        "description": "Export a contiguous `dpl-chain/1` ledger slice for standalone offline chain verification (`bipkit-verify chain`).",
+        "operationId": "export_ledger_chain_api_v1_provenance_chain_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "from_seq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Starting ledger sequence number (inclusive)",
+              "default": 1,
+              "title": "From Seq"
+            },
+            "description": "Starting ledger sequence number (inclusive)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "description": "Maximum number of contiguous records to export",
+              "default": 100,
+              "title": "Limit"
+            },
+            "description": "Maximum number of contiguous records to export"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Export Ledger Chain Api V1 Provenance Chain Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/metrics": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Get Provenance Metrics",
+        "description": "Return tenant-scoped provenance telemetry (status breakdown, abstention rate, tier distribution, outcome alignment).",
+        "operationId": "get_provenance_metrics_api_v1_provenance_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Provenance Metrics Api V1 Provenance Metrics Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/provenance/records": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "List Provenance Records",
+        "description": "Paginated, filterable ledger explorer endpoint for Console UI and SDK/MCP consumers.",
+        "operationId": "list_provenance_records_api_v1_provenance_records_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(decided|abstained|errored)$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "primitive_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(choice|noul|score)$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Primitive Type"
+            }
+          },
+          {
+            "name": "execution_stage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Execution Stage"
+            }
+          },
+          {
+            "name": "request_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Request Id"
+            }
+          },
+          {
+            "name": "from_seq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Seq"
+            }
+          },
+          {
+            "name": "to_seq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Seq"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(asc|desc)$",
+              "default": "desc",
+              "title": "Order"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response List Provenance Records Api V1 Provenance Records Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/records/{entry_id}": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Get Provenance Record By Id",
+        "description": "Inspect a single tenant-scoped `dpl/2.1` record by `entry_id` with live 21-invariant verification summary.",
+        "operationId": "get_provenance_record_by_id_api_v1_provenance_records__entry_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Provenance Record By Id Api V1 Provenance Records  Entry Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/requests/{request_id}": {
+      "get": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Get Request Provenance Records",
+        "description": "Fetch all `dpl/2.1` provenance records generated for `request_id` (tenant-scoped).",
+        "operationId": "get_request_provenance_records_api_v1_provenance_requests__request_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Request Provenance Records Api V1 Provenance Requests  Request Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/provenance/export": {
+      "post": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Export Provenance Bundle",
+        "description": "Export a signed `dpl-bundle/1` selective-disclosure audit bundle.\nIf `presented_state` is supplied, verifies `sha256(utf8_nfc(presented_state)) == state_digest`\nwithout persisting `presented_state`.",
+        "operationId": "export_provenance_bundle_api_v1_provenance_export_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportBundleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Export Provenance Bundle Api V1 Provenance Export Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/provenance/verify": {
+      "post": {
+        "tags": [
+          "Decision Provenance Ledger"
+        ],
+        "summary": "Verify Submitted Bundle",
+        "description": "Statelessly verify any `dpl-bundle/1` export against all 21 frozen invariants.",
+        "operationId": "verify_submitted_bundle_api_v1_provenance_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DplBundle"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Verify Submitted Bundle Api V1 Provenance Verify Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health",
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "APIKeyInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "key_prefix": {
+            "type": "string",
+            "title": "Key Prefix"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "last_used_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Used At"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "key_prefix",
+          "environment",
+          "scopes",
+          "is_active",
+          "created_at"
+        ],
+        "title": "APIKeyInfo"
+      },
+      "BatchRecordOutcomeRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RecordOutcomeRequest"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "BatchRecordOutcomeRequest"
+      },
+      "CalibrationEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "parametric",
+              "post_hoc_platt",
+              "post_hoc_isotonic"
+            ],
+            "title": "Type"
+          },
+          "artifact_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artifact Digest"
+          },
+          "dataset_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dataset Digest"
+          },
+          "split_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Split Digest"
+          },
+          "ece": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ece"
+          },
+          "brier_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brier Score"
+          },
+          "rps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rps"
+          },
+          "sample_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample Count"
+          },
+          "fitted_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fitted At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type"
+        ],
+        "title": "CalibrationEntry"
+      },
+      "CalibrationSpec": {
+        "properties": {
+          "noul": {
+            "$ref": "#/components/schemas/CalibrationEntry"
+          },
+          "choice": {
+            "$ref": "#/components/schemas/CalibrationEntry"
+          },
+          "score": {
+            "$ref": "#/components/schemas/CalibrationEntry"
+          }
+        },
+        "type": "object",
+        "title": "CalibrationSpec"
+      },
+      "CandidateModel": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Unique slug or identifier for candidate decision"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label",
+            "description": "Human friendly label"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Optional descriptive definition"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "CandidateModel"
+      },
+      "CascadeRoute": {
+        "properties": {
+          "route_id": {
+            "type": "string",
+            "title": "Route Id"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "tier_0",
+              "tier_1",
+              "tier_2"
+            ],
+            "title": "Tier"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "gate",
+              "decision"
+            ],
+            "title": "Role"
+          },
+          "artifact_digest": {
+            "type": "string",
+            "title": "Artifact Digest"
+          }
+        },
+        "type": "object",
+        "required": [
+          "route_id",
+          "tier",
+          "role",
+          "artifact_digest"
+        ],
+        "title": "CascadeRoute"
+      },
+      "CascadeSpec": {
+        "properties": {
+          "tiers": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "tier_0",
+                "tier_1",
+                "tier_2"
+              ]
+            },
+            "type": "array",
+            "title": "Tiers"
+          },
+          "supports_fallback_then_abstain": {
+            "type": "boolean",
+            "title": "Supports Fallback Then Abstain",
+            "default": false
+          },
+          "routes": {
+            "items": {
+              "$ref": "#/components/schemas/CascadeRoute"
+            },
+            "type": "array",
+            "title": "Routes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "routes"
+        ],
+        "title": "CascadeSpec"
+      },
+      "ChoiceDecisionItem": {
+        "properties": {
+          "candidate_id": {
+            "type": "string",
+            "title": "Candidate Id"
+          },
+          "probability": {
+            "type": "number",
+            "title": "Probability"
+          },
+          "confidence_tier": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence Tier"
+          },
+          "confidence_index": {
+            "type": "number",
+            "title": "Confidence Index"
+          },
+          "margin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "candidate_id",
+          "probability",
+          "confidence_tier",
+          "confidence_index"
+        ],
+        "title": "ChoiceDecisionItem"
+      },
+      "ChoiceDerivations": {
+        "properties": {
+          "margin": {
+            "type": "string",
+            "title": "Margin",
+            "default": "top1 - top2"
+          },
+          "confidence_index": {
+            "type": "string",
+            "title": "Confidence Index",
+            "default": "top1"
+          },
+          "entropy": {
+            "type": "string",
+            "title": "Entropy",
+            "default": "-sum(p * log2(p))"
+          }
+        },
+        "type": "object",
+        "title": "ChoiceDerivations"
+      },
+      "ChoiceScoreThreshold": {
+        "properties": {
+          "high": {
+            "type": "number",
+            "title": "High"
+          },
+          "medium": {
+            "type": "number",
+            "title": "Medium"
+          }
+        },
+        "type": "object",
+        "required": [
+          "high",
+          "medium"
+        ],
+        "title": "ChoiceScoreThreshold"
+      },
+      "CreateAPIKeyRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name",
+            "description": "Friendly label for the API key"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment",
+            "description": "Environment: 'live' or 'test'",
+            "default": "live"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes",
+            "description": "List of allowed authorization scopes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "CreateAPIKeyRequest"
+      },
+      "CreateAPIKeyResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key",
+            "description": "Raw cryptographic API key secret. Shown only once upon creation!"
+          },
+          "key_prefix": {
+            "type": "string",
+            "title": "Key Prefix"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "key",
+          "key_prefix",
+          "environment",
+          "scopes",
+          "created_at"
+        ],
+        "title": "CreateAPIKeyResponse"
+      },
+      "CustomerFeedbackRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Request Id",
+            "description": "Original request identifier to link feedback"
+          },
+          "verified_decision": {
+            "title": "Verified Decision",
+            "description": "True, ground-truth verified decision outcome"
+          },
+          "was_accurate": {
+            "type": "boolean",
+            "title": "Was Accurate",
+            "description": "Whether BipKit's decision was correct"
+          },
+          "operator_notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator Notes",
+            "description": "Optional notes or failure diagnostic comments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "verified_decision",
+          "was_accurate"
+        ],
+        "title": "CustomerFeedbackRequest",
+        "description": "Ingestion schema for verified production feedback."
+      },
+      "CustomerFeedbackResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "received",
+              "error"
+            ],
+            "title": "Status",
+            "default": "received"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "recorded_at": {
+            "type": "string",
+            "title": "Recorded At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "recorded_at"
+        ],
+        "title": "CustomerFeedbackResponse"
+      },
+      "DecisionItemModel": {
+        "properties": {
+          "candidate_id": {
+            "type": "string",
+            "title": "Candidate Id"
+          },
+          "probability": {
+            "type": "number",
+            "title": "Probability"
+          },
+          "confidence_tier": {
+            "type": "string",
+            "title": "Confidence Tier"
+          },
+          "confidence_index": {
+            "type": "number",
+            "title": "Confidence Index",
+            "description": "Normalized confidence index [0.0, 1.0]"
+          },
+          "margin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin",
+            "description": "Separation margin between top candidate and runner-up"
+          }
+        },
+        "type": "object",
+        "required": [
+          "candidate_id",
+          "probability",
+          "confidence_tier",
+          "confidence_index"
+        ],
+        "title": "DecisionItemModel"
+      },
+      "DecisionRequest": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "minLength": 1,
+            "title": "State",
+            "description": "Context, state, or question to evaluate"
+          },
+          "choices": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CandidateModel"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Choices",
+            "description": "List of choices or candidate objects"
+          },
+          "engine": {
+            "type": "string",
+            "title": "Engine",
+            "description": "Engine tier: 'bip-instant', 'bip-cascade', or 'bip-cascade'",
+            "default": "bip-instant"
+          },
+          "top_k": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top K",
+            "description": "Optional cap on returned candidates"
+          },
+          "temperature": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature",
+            "description": "Optional custom temperature for Softmax"
+          }
+        },
+        "type": "object",
+        "required": [
+          "state",
+          "choices"
+        ],
+        "title": "DecisionRequest"
+      },
+      "DecisionResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Unique time-ordered request identifier"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "engine": {
+            "type": "string",
+            "title": "Engine"
+          },
+          "uncertainty_entropy": {
+            "type": "number",
+            "title": "Uncertainty Entropy"
+          },
+          "top_choice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top Choice"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/DecisionItemModel"
+            },
+            "type": "array",
+            "title": "Decisions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "state",
+          "engine",
+          "uncertainty_entropy",
+          "top_choice",
+          "decisions"
+        ],
+        "title": "DecisionResponse"
+      },
+      "DerivationsSpec": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "default": "derivations/1"
+          },
+          "choice": {
+            "$ref": "#/components/schemas/ChoiceDerivations"
+          },
+          "noul": {
+            "$ref": "#/components/schemas/NoulDerivations"
+          },
+          "score": {
+            "$ref": "#/components/schemas/ScoreDerivations"
+          }
+        },
+        "type": "object",
+        "title": "DerivationsSpec"
+      },
+      "DplBundle": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "dpl-bundle/1",
+            "title": "Schema Version",
+            "default": "dpl-bundle/1"
+          },
+          "record": {
+            "$ref": "#/components/schemas/DplRecord"
+          },
+          "state_disclosure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StateDisclosure"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DplOutcome"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "manifest": {
+            "$ref": "#/components/schemas/EngineManifest"
+          },
+          "signature": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SignatureBlock"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "record",
+          "manifest"
+        ],
+        "title": "DplBundle"
+      },
+      "DplDigests": {
+        "properties": {
+          "response_digest": {
+            "type": "string",
+            "title": "Response Digest"
+          },
+          "decision_facts_digest": {
+            "type": "string",
+            "title": "Decision Facts Digest"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_digest",
+          "decision_facts_digest"
+        ],
+        "title": "DplDigests"
+      },
+      "DplEngineRef": {
+        "properties": {
+          "engine_id": {
+            "type": "string",
+            "title": "Engine Id"
+          },
+          "manifest_version": {
+            "type": "string",
+            "title": "Manifest Version"
+          },
+          "manifest_hash": {
+            "type": "string",
+            "title": "Manifest Hash"
+          }
+        },
+        "type": "object",
+        "required": [
+          "engine_id",
+          "manifest_version",
+          "manifest_hash"
+        ],
+        "title": "DplEngineRef"
+      },
+      "DplInputRef": {
+        "properties": {
+          "retention": {
+            "type": "string",
+            "const": "zero",
+            "title": "Retention",
+            "default": "zero"
+          },
+          "canonicalization": {
+            "type": "string",
+            "const": "utf-8-nfc",
+            "title": "Canonicalization",
+            "default": "utf-8-nfc"
+          },
+          "digest_algorithm": {
+            "type": "string",
+            "const": "sha256",
+            "title": "Digest Algorithm",
+            "default": "sha256"
+          },
+          "state_digest": {
+            "type": "string",
+            "title": "State Digest"
+          }
+        },
+        "type": "object",
+        "required": [
+          "state_digest"
+        ],
+        "title": "DplInputRef"
+      },
+      "DplOutcome": {
+        "properties": {
+          "observed_effect": {
+            "title": "Observed Effect"
+          },
+          "recorded_at": {
+            "type": "string",
+            "title": "Recorded At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "observed_effect",
+          "recorded_at"
+        ],
+        "title": "DplOutcome"
+      },
+      "DplRecord": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "dpl/2.1",
+            "title": "Schema Version",
+            "default": "dpl/2.1"
+          },
+          "entry_id": {
+            "type": "string",
+            "title": "Entry Id"
+          },
+          "prev_entry_hash": {
+            "type": "string",
+            "title": "Prev Entry Hash",
+            "default": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "entry_hash": {
+            "type": "string",
+            "title": "Entry Hash",
+            "default": ""
+          },
+          "recorded_at": {
+            "type": "string",
+            "title": "Recorded At"
+          },
+          "source": {
+            "$ref": "#/components/schemas/DplSource"
+          },
+          "engine": {
+            "$ref": "#/components/schemas/DplEngineRef"
+          },
+          "input": {
+            "$ref": "#/components/schemas/DplInputRef"
+          },
+          "result": {
+            "$ref": "#/components/schemas/DplResult"
+          },
+          "digests": {
+            "$ref": "#/components/schemas/DplDigests"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DplOutcome"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "signature": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SignatureBlock"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "entry_id",
+          "recorded_at",
+          "source",
+          "engine",
+          "input",
+          "result",
+          "digests"
+        ],
+        "title": "DplRecord"
+      },
+      "DplResult": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "choice",
+              "noul",
+              "score"
+            ],
+            "title": "Type"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "decided",
+              "abstained",
+              "errored"
+            ],
+            "title": "Status"
+          },
+          "calibration_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration Id"
+          },
+          "execution_stage": {
+            "type": "string",
+            "enum": [
+              "tier_0",
+              "tier_1",
+              "tier_2"
+            ],
+            "title": "Execution Stage"
+          },
+          "route_id": {
+            "type": "string",
+            "title": "Route Id"
+          },
+          "artifact_digest": {
+            "type": "string",
+            "title": "Artifact Digest"
+          },
+          "escalation_trace": {
+            "items": {
+              "$ref": "#/components/schemas/EscalationTraceEntry"
+            },
+            "type": "array",
+            "title": "Escalation Trace"
+          },
+          "top_choice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top Choice"
+          },
+          "uncertainty_entropy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Entropy"
+          },
+          "decisions": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ChoiceDecisionItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decisions"
+          },
+          "noul": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Noul"
+          },
+          "margin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin"
+          },
+          "confidence_index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence Index"
+          },
+          "confidence_tier": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence Tier"
+          },
+          "level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level"
+          },
+          "levels": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Levels"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "distribution": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distribution"
+          },
+          "derived_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Derived Fields"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "status",
+          "execution_stage",
+          "route_id",
+          "artifact_digest",
+          "escalation_trace"
+        ],
+        "title": "DplResult"
+      },
+      "DplSource": {
+        "properties": {
+          "operation_type": {
+            "type": "string",
+            "enum": [
+              "decide",
+              "evaluate"
+            ],
+            "title": "Operation Type"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "output_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Name"
+          },
+          "org_id": {
+            "type": "string",
+            "title": "Org Id"
+          },
+          "api_key_id_hash": {
+            "type": "string",
+            "title": "Api Key Id Hash"
+          }
+        },
+        "type": "object",
+        "required": [
+          "operation_type",
+          "request_id",
+          "org_id",
+          "api_key_id_hash"
+        ],
+        "title": "DplSource"
+      },
+      "EngineManifest": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "manifest/1",
+            "title": "Schema Version",
+            "default": "manifest/1"
+          },
+          "engine_id": {
+            "type": "string",
+            "title": "Engine Id",
+            "default": "bip-cascade-v2"
+          },
+          "manifest_version": {
+            "type": "string",
+            "title": "Manifest Version",
+            "default": "2.5.0"
+          },
+          "published_at": {
+            "type": "string",
+            "title": "Published At",
+            "default": "2026-11-21T00:00:00Z"
+          },
+          "digest": {
+            "type": "string",
+            "title": "Digest",
+            "default": ""
+          },
+          "rounding": {
+            "$ref": "#/components/schemas/RoundingSpec"
+          },
+          "tolerances": {
+            "$ref": "#/components/schemas/ToleranceSpec"
+          },
+          "tier_thresholds": {
+            "$ref": "#/components/schemas/TierThresholds"
+          },
+          "derivations": {
+            "$ref": "#/components/schemas/DerivationsSpec"
+          },
+          "cascade": {
+            "$ref": "#/components/schemas/CascadeSpec"
+          },
+          "calibration": {
+            "$ref": "#/components/schemas/CalibrationSpec"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cascade"
+        ],
+        "title": "EngineManifest"
+      },
+      "EngineStatusModel": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "tier": {
+            "type": "string",
+            "title": "Tier"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "available"
+          },
+          "is_trained": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Trained"
+          },
+          "classes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Classes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "tier",
+          "description"
+        ],
+        "title": "EngineStatusModel"
+      },
+      "EscalationTraceEntry": {
+        "properties": {
+          "stage": {
+            "type": "string",
+            "enum": [
+              "tier_0",
+              "tier_1",
+              "tier_2"
+            ],
+            "title": "Stage"
+          },
+          "route_id": {
+            "type": "string",
+            "title": "Route Id"
+          },
+          "artifact_digest": {
+            "type": "string",
+            "title": "Artifact Digest"
+          },
+          "exit": {
+            "type": "string",
+            "enum": [
+              "ambiguous",
+              "resolved",
+              "abstained",
+              "error"
+            ],
+            "title": "Exit"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "latency_us": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Latency Us"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stage",
+          "route_id",
+          "artifact_digest",
+          "exit",
+          "latency_us"
+        ],
+        "title": "EscalationTraceEntry"
+      },
+      "EvaluateRequest": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "minLength": 1,
+            "title": "State",
+            "description": "Shared context or state payload"
+          },
+          "evaluations": {
+            "additionalProperties": true,
+            "type": "object",
+            "minProperties": 1,
+            "title": "Evaluations",
+            "description": "Dictionary of typed evaluations to perform over the state"
+          },
+          "engine": {
+            "type": "string",
+            "title": "Engine",
+            "description": "Engine tier: 'bip-instant', 'bip-cascade', or 'bip-cascade'",
+            "default": "bip-instant"
+          },
+          "temperature": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature",
+            "description": "Optional temperature calibration"
+          }
+        },
+        "type": "object",
+        "required": [
+          "state",
+          "evaluations"
+        ],
+        "title": "EvaluateRequest"
+      },
+      "EvaluateResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Unique time-ordered request identifier"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "engine": {
+            "type": "string",
+            "title": "Engine"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageModel"
+          },
+          "results": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "state",
+          "engine",
+          "usage",
+          "results"
+        ],
+        "title": "EvaluateResponse"
+      },
+      "ExportBundleRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Request Id"
+          },
+          "output_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Name",
+            "description": "Evaluation output name (omit or null for /decide)"
+          },
+          "presented_state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Presented State",
+            "description": "Optional raw state presented on-demand for selective-disclosure SHA-256 verification (never stored)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "ExportBundleRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "NoulDerivations": {
+        "properties": {
+          "margin": {
+            "type": "string",
+            "title": "Margin",
+            "default": "2 * abs(p - 0.5)"
+          },
+          "confidence_index": {
+            "type": "string",
+            "title": "Confidence Index",
+            "default": "max(p, 1 - p)"
+          },
+          "tier_input": {
+            "type": "string",
+            "title": "Tier Input",
+            "default": "abs(p - 0.5)"
+          }
+        },
+        "type": "object",
+        "title": "NoulDerivations"
+      },
+      "NoulThreshold": {
+        "properties": {
+          "high": {
+            "type": "number",
+            "title": "High"
+          },
+          "medium": {
+            "type": "number",
+            "title": "Medium"
+          },
+          "formula": {
+            "type": "string",
+            "title": "Formula",
+            "default": "abs(p - 0.5)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "high",
+          "medium"
+        ],
+        "title": "NoulThreshold"
+      },
+      "RecordOutcomeRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Request Id"
+          },
+          "output_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Name",
+            "description": "Evaluation output name (omit or null for /decide)"
+          },
+          "observed_effect": {
+            "title": "Observed Effect",
+            "description": "Observed ground-truth decision/level/boolean outcome"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "observed_effect"
+        ],
+        "title": "RecordOutcomeRequest"
+      },
+      "RotateAPIKeyRequest": {
+        "properties": {
+          "grace_period_minutes": {
+            "type": "integer",
+            "maximum": 10080.0,
+            "minimum": 0.0,
+            "title": "Grace Period Minutes",
+            "description": "Optional overlap window (minutes) before the previous key expires (0 = revoke immediately)",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "RotateAPIKeyRequest"
+      },
+      "RotateAPIKeyResponse": {
+        "properties": {
+          "new_key": {
+            "$ref": "#/components/schemas/CreateAPIKeyResponse"
+          },
+          "rotated_key_id": {
+            "type": "string",
+            "title": "Rotated Key Id"
+          },
+          "previous_key_revoked_immediately": {
+            "type": "boolean",
+            "title": "Previous Key Revoked Immediately"
+          },
+          "previous_key_expires_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Key Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "new_key",
+          "rotated_key_id",
+          "previous_key_revoked_immediately"
+        ],
+        "title": "RotateAPIKeyResponse"
+      },
+      "RoundingSpec": {
+        "properties": {
+          "probability": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Probability",
+            "default": 6
+          },
+          "noul": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Noul",
+            "default": 4
+          },
+          "margin": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Margin",
+            "default": 4
+          },
+          "confidence_index": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Confidence Index",
+            "default": 4
+          },
+          "uncertainty_entropy": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Uncertainty Entropy",
+            "default": 4
+          },
+          "distribution": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Distribution",
+            "default": 4
+          },
+          "score": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Score",
+            "default": 3
+          }
+        },
+        "type": "object",
+        "title": "RoundingSpec"
+      },
+      "ScoreDerivations": {
+        "properties": {
+          "confidence_index": {
+            "type": "string",
+            "title": "Confidence Index",
+            "default": "max(distribution)"
+          },
+          "level": {
+            "type": "string",
+            "title": "Level",
+            "default": "argmax(distribution)"
+          },
+          "score": {
+            "type": "string",
+            "title": "Score",
+            "default": "sum(rank(level) * prob)"
+          }
+        },
+        "type": "object",
+        "title": "ScoreDerivations"
+      },
+      "SignatureBlock": {
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "const": "Ed25519",
+            "title": "Algorithm",
+            "default": "Ed25519"
+          },
+          "key_id": {
+            "type": "string",
+            "title": "Key Id"
+          },
+          "sig": {
+            "type": "string",
+            "title": "Sig"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key_id",
+          "sig"
+        ],
+        "title": "SignatureBlock"
+      },
+      "StateDisclosure": {
+        "properties": {
+          "presented_state": {
+            "type": "string",
+            "title": "Presented State"
+          },
+          "state_sha256": {
+            "type": "string",
+            "title": "State Sha256"
+          },
+          "canonicalization": {
+            "type": "string",
+            "const": "utf-8-nfc",
+            "title": "Canonicalization",
+            "default": "utf-8-nfc"
+          },
+          "presented_by": {
+            "type": "string",
+            "title": "Presented By"
+          },
+          "presented_at": {
+            "type": "string",
+            "title": "Presented At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "presented_state",
+          "state_sha256",
+          "presented_by",
+          "presented_at"
+        ],
+        "title": "StateDisclosure"
+      },
+      "TierThresholds": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "default": "thresholds/1"
+          },
+          "choice": {
+            "$ref": "#/components/schemas/ChoiceScoreThreshold"
+          },
+          "score": {
+            "$ref": "#/components/schemas/ChoiceScoreThreshold"
+          },
+          "noul": {
+            "$ref": "#/components/schemas/NoulThreshold"
+          }
+        },
+        "type": "object",
+        "title": "TierThresholds"
+      },
+      "ToleranceSpec": {
+        "properties": {
+          "score": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Score",
+            "default": 0.001
+          },
+          "uncertainty_entropy": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Uncertainty Entropy",
+            "default": 0.001
+          },
+          "margin": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Margin",
+            "default": 0.0001
+          },
+          "confidence_index": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Confidence Index",
+            "default": 0.0001
+          },
+          "probability_sum": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Probability Sum",
+            "default": 0.001
+          }
+        },
+        "type": "object",
+        "title": "ToleranceSpec"
+      },
+      "UsageEngineBreakdown": {
+        "properties": {
+          "engine": {
+            "type": "string",
+            "title": "Engine"
+          },
+          "requests": {
+            "type": "integer",
+            "title": "Requests"
+          },
+          "avg_latency_ms": {
+            "type": "number",
+            "title": "Avg Latency Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "engine",
+          "requests",
+          "avg_latency_ms"
+        ],
+        "title": "UsageEngineBreakdown"
+      },
+      "UsageModel": {
+        "properties": {
+          "evaluations_count": {
+            "type": "integer",
+            "title": "Evaluations Count"
+          },
+          "state_tokens": {
+            "type": "integer",
+            "title": "State Tokens"
+          },
+          "evaluation_tokens": {
+            "type": "integer",
+            "title": "Evaluation Tokens"
+          },
+          "total_tokens": {
+            "type": "integer",
+            "title": "Total Tokens"
+          },
+          "latency_ms": {
+            "type": "number",
+            "title": "Latency Ms",
+            "description": "Execution latency in milliseconds",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "evaluations_count",
+          "state_tokens",
+          "evaluation_tokens",
+          "total_tokens"
+        ],
+        "title": "UsageModel"
+      },
+      "UsageSummaryResponse": {
+        "properties": {
+          "organization_id": {
+            "type": "string",
+            "title": "Organization Id"
+          },
+          "period_ym": {
+            "type": "string",
+            "title": "Period Ym"
+          },
+          "plan_slug": {
+            "type": "string",
+            "title": "Plan Slug"
+          },
+          "plan_name": {
+            "type": "string",
+            "title": "Plan Name"
+          },
+          "subscription_status": {
+            "type": "string",
+            "title": "Subscription Status"
+          },
+          "decisions_used": {
+            "type": "integer",
+            "title": "Decisions Used"
+          },
+          "evaluations_used": {
+            "type": "integer",
+            "title": "Evaluations Used"
+          },
+          "total_tokens": {
+            "type": "integer",
+            "title": "Total Tokens"
+          },
+          "monthly_limit": {
+            "type": "integer",
+            "title": "Monthly Limit"
+          },
+          "remaining_quota": {
+            "type": "integer",
+            "title": "Remaining Quota"
+          },
+          "avg_latency_ms": {
+            "type": "number",
+            "title": "Avg Latency Ms"
+          },
+          "by_engine": {
+            "items": {
+              "$ref": "#/components/schemas/UsageEngineBreakdown"
+            },
+            "type": "array",
+            "title": "By Engine"
+          }
+        },
+        "type": "object",
+        "required": [
+          "organization_id",
+          "period_ym",
+          "plan_slug",
+          "plan_name",
+          "subscription_status",
+          "decisions_used",
+          "evaluations_used",
+          "total_tokens",
+          "monthly_limit",
+          "remaining_quota",
+          "avg_latency_ms",
+          "by_engine"
+        ],
+        "title": "UsageSummaryResponse"
+      },
+      "UsageTimeseriesPoint": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "requests": {
+            "type": "integer",
+            "title": "Requests"
+          },
+          "avg_latency_ms": {
+            "type": "number",
+            "title": "Avg Latency Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "requests",
+          "avg_latency_ms"
+        ],
+        "title": "UsageTimeseriesPoint"
+      },
+      "UsageTimeseriesResponse": {
+        "properties": {
+          "organization_id": {
+            "type": "string",
+            "title": "Organization Id"
+          },
+          "days": {
+            "type": "integer",
+            "title": "Days"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/UsageTimeseriesPoint"
+            },
+            "type": "array",
+            "title": "Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "organization_id",
+          "days",
+          "points"
+        ],
+        "title": "UsageTimeseriesResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key (bpk_live_...)",
+        "description": "Authenticate using `Authorization: Bearer bpk_live_...`."
+      },
+      "ApiKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Alternative header authentication using `X-API-Key: bpk_live_...`."
+      }
+    }
+  }
+}
