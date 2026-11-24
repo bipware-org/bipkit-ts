@@ -1,4 +1,4 @@
-# Bipkit TypeScript SDK (`@bipware/bipkit`)
+# Bipkit TypeScript SDK (`@bipware-org/bipkit`)
 
 Official, zero-dependency TypeScript/JavaScript SDK for the [Bipkit System One Decision Engine API](https://docs.bipkit.io).
 
@@ -7,13 +7,13 @@ Works natively on **Node 18+**, **Bun**, **Deno**, **Cloudflare Workers**, and *
 ## Installation
 
 ```bash
-npm install @bipware/bipkit
+npm install @bipware-org/bipkit
 ```
 
 ## Quickstart
 
 ```ts
-import { Bipkit, shouldEscalate } from "@bipware/bipkit";
+import { Bipkit, shouldEscalate } from "@bipware-org/bipkit";
 
 // Reads process.env.BIPKIT_API_KEY by default
 const bipkit = new Bipkit();

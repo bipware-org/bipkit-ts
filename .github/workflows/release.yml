@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   publish:
-    name: Build & Publish @bipware/bipkit to npm (with Provenance)
+    name: Build & Publish @bipware-org/bipkit to npm (with Provenance)
     runs-on: ubuntu-latest
     environment:
       name: npm
