@@ -1,5 +1,5 @@
 {
-  "name": "@bipkit/sdk",
+  "name": "@bipware/bipkit",
   "version": "0.1.0",
   "description": "Official TypeScript/JavaScript SDK for the Bipkit System One Decision Engine API.",
   "license": "MIT",
